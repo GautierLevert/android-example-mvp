@@ -2,19 +2,21 @@ package org.mybop.mvpmindorks.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.mybop.mvpmindorks.BaseActivity;
 import org.mybop.mvpmindorks.MvpApp;
 import org.mybop.mvpmindorks.R;
 import org.mybop.mvpmindorks.main.MainActivity;
+
+import io.reactivex.disposables.CompositeDisposable;
 
 /**
  * A login screen that offers login via email/password.
@@ -31,6 +33,7 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     // presenter
     private LoginPresenter loginPresenter;
 
+    private CompositeDisposable subscriptions = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,26 +44,18 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
 
         loginPresenter = new LoginPresenter(this, ((MvpApp) getApplication()).getUserManager());
 
+        subscriptions.add(RxTextView.editorActions(mPasswordView, (id) -> id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL)
+                .subscribe(n -> attemptLogin()));
 
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
-            }
-        });
+        subscriptions.add(RxView.clicks(mEmailSignInButton)
+                .subscribe(n -> attemptLogin()));
 
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        subscriptions.dispose();
     }
 
     private void attemptLogin() {

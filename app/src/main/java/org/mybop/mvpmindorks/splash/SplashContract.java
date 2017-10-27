@@ -4,6 +4,8 @@ import org.mybop.mvpmindorks.MvpModel;
 import org.mybop.mvpmindorks.MvpPresenter;
 import org.mybop.mvpmindorks.MvpView;
 
+import io.reactivex.Single;
+
 public interface SplashContract {
     interface View extends MvpView {
         void openMainActivity();
@@ -16,6 +18,6 @@ public interface SplashContract {
     }
 
     interface Model extends MvpModel {
-        boolean getLoggedInMode();
+        Single<Boolean> getLoggedInMode();
     }
 }

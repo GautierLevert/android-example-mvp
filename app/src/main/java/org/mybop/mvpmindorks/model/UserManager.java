@@ -4,6 +4,9 @@ import org.mybop.mvpmindorks.login.LoginContract;
 import org.mybop.mvpmindorks.main.MainContract;
 import org.mybop.mvpmindorks.splash.SplashContract;
 
+import io.reactivex.Completable;
+import io.reactivex.Single;
+
 public class UserManager implements SplashContract.Model, LoginContract.Model, MainContract.Model {
 
     SharedPrefsHelper sharedPrefsHelper;
@@ -13,27 +16,27 @@ public class UserManager implements SplashContract.Model, LoginContract.Model, M
     }
 
     @Override
-    public void clear() {
-        sharedPrefsHelper.clear();
+    public Completable clear() {
+        return Completable.fromAction(() -> sharedPrefsHelper.clear());
     }
 
     @Override
-    public void saveEmail(String email) {
-        sharedPrefsHelper.putEmail(email);
+    public Completable saveEmail(final String email) {
+        return Completable.fromAction(() -> sharedPrefsHelper.putEmail(email));
     }
 
     @Override
-    public String getEmail() {
-        return sharedPrefsHelper.getEmail();
+    public Single<String> getEmail() {
+        return Single.fromCallable(() -> sharedPrefsHelper.getEmail());
     }
 
     @Override
-    public void setLoggedIn() {
-        sharedPrefsHelper.setLoggedInMode(true);
+    public Completable setLoggedIn() {
+        return Completable.fromAction(() -> sharedPrefsHelper.setLoggedIn());
     }
 
     @Override
-    public boolean getLoggedInMode() {
-        return sharedPrefsHelper.getLoggedInMode();
+    public Single<Boolean> getLoggedInMode() {
+        return Single.fromCallable(() -> sharedPrefsHelper.getLoggedInMode());
     }
 }

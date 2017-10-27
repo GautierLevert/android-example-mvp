@@ -24,7 +24,6 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
         splashPresenter = new SplashPresenter(this, dataManager);
         
         splashPresenter.decideNextActivity();
-
     }
 
     @Override

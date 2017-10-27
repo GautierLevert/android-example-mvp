@@ -33,7 +33,7 @@ public class SharedPrefsHelper {
         return mSharedPreferences.getBoolean("IS_LOGGED_IN", false);
     }
 
-    public void setLoggedInMode(boolean loggedIn) {
-        mSharedPreferences.edit().putBoolean("IS_LOGGED_IN", loggedIn).apply();
+    public void setLoggedIn() {
+        mSharedPreferences.edit().putBoolean("IS_LOGGED_IN", true).apply();
     }
 }

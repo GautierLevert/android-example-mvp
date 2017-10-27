@@ -1,10 +1,15 @@
 package org.mybop.mvpmindorks.login;
 
-import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import org.mybop.mvpmindorks.BasePresenter;
 import org.mybop.mvpmindorks.CommonUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by gautier on 27/10/2017.
@@ -18,34 +23,23 @@ public class LoginPresenter extends BasePresenter<LoginContract.View, LoginContr
 
     @Override
     public void attemptLogin(final String email, final String password) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                try {
-                    Thread.sleep(1000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
+        Completable.fromAction(() -> {
+            if (!CommonUtils.isEmailValid(email) || password == null || password.isEmpty()) {
+                throw new IllegalArgumentException("email or password invalid");
             }
+        })
+                .andThen(getDataManager().saveEmail(email))
+                .andThen(getDataManager().setLoggedIn())
+                .delay(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(disposable ->
+                        getView().showLoginInProgress())
+                .subscribe(() ->
+                                getView().openMainActivity(),
+                        throwable ->
+                                getView().showLoginFailed());
 
-            @Override
-            protected void onPreExecute() {
-                getView().showLoginInProgress();
-            }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                if (!CommonUtils.isEmailValid(email) || password == null || password.isEmpty()) {
-                    getView().showLoginFailed();
-                    return;
-                }
-
-                getDataManager().saveEmail(email);
-                getDataManager().setLoggedIn();
-
-                getView().openMainActivity();
-            }
-        }.execute();
     }
 }

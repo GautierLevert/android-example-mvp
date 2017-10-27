@@ -4,6 +4,8 @@ import org.mybop.mvpmindorks.MvpModel;
 import org.mybop.mvpmindorks.MvpPresenter;
 import org.mybop.mvpmindorks.MvpView;
 
+import io.reactivex.Completable;
+
 public interface LoginContract {
     interface View extends MvpView {
 
@@ -22,8 +24,8 @@ public interface LoginContract {
 
     interface Model extends MvpModel {
 
-        void saveEmail(String email);
+        Completable saveEmail(String email);
 
-        void setLoggedIn();
+        Completable setLoggedIn();
     }
 }
