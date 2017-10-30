@@ -1,7 +1,6 @@
 package org.mybop.mvpmindorks.login;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -17,7 +16,7 @@ import org.mybop.mvpmindorks.main.MainActivity;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.CompositeDisposable;
+import butterknife.BindView;
 import toothpick.config.Module;
 
 /**
@@ -26,37 +25,35 @@ import toothpick.config.Module;
 public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     // UI references.
-    private EditText mEmailView;
-    private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
-    private Button mEmailSignInButton;
+    @BindView(R.id.email)
+    EditText mEmailView;
+    @BindView(R.id.password)
+    EditText mPasswordView;
+    @BindView(R.id.login_progress)
+    View mProgressView;
+    @BindView(R.id.login_form)
+    View mLoginFormView;
+    @BindView(R.id.email_sign_in_button)
+    Button mEmailSignInButton;
 
     // presenter
     @Inject
     LoginContract.Presenter loginPresenter;
 
-    private CompositeDisposable subscriptions = new CompositeDisposable();
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void setContentView() {
         setContentView(R.layout.activity_login);
-
-        bindViews();
-
-        subscriptions.add(RxTextView.editorActions(mPasswordView, (id) -> id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL)
-                .subscribe(n -> attemptLogin()));
-
-        subscriptions.add(RxView.clicks(mEmailSignInButton)
-                .subscribe(n -> attemptLogin()));
-
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        subscriptions.dispose();
+    protected void onViewBound() {
+        super.onViewBound();
+
+        addSubscription(RxTextView.editorActions(mPasswordView, (id) -> id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL)
+                .subscribe(n -> attemptLogin()));
+
+        addSubscription(RxView.clicks(mEmailSignInButton)
+                .subscribe(n -> attemptLogin()));
     }
 
     @Override
@@ -66,14 +63,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
 
     private void attemptLogin() {
         loginPresenter.attemptLogin(mEmailView.getText().toString(), mPasswordView.getText().toString());
-    }
-
-    private void bindViews() {
-        mEmailView = findViewById(R.id.email);
-        mPasswordView = findViewById(R.id.password);
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-        mEmailSignInButton = findViewById(R.id.email_sign_in_button);
     }
 
     @Override

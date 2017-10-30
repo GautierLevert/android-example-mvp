@@ -1,8 +1,6 @@
 package org.mybop.mvpmindorks.main;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.jakewharton.rxbinding2.view.RxView;
@@ -13,41 +11,35 @@ import org.mybop.mvpmindorks.splash.SplashActivity;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.CompositeDisposable;
+import butterknife.BindView;
 import toothpick.config.Module;
 
 public class MainActivity extends BaseActivity implements MainContract.View {
 
+    @BindView(R.id.textView)
+    TextView textView;
+
     @Inject
     MainContract.Presenter mainPresenter;
 
-    private TextView textView;
-
-    private CompositeDisposable subscriptions = new CompositeDisposable();
+    @Override
+    protected void setContentView() {
+        setContentView(R.layout.activity_main);
+    }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    protected void onViewBound() {
+        super.onViewBound();
 
-        textView = findViewById(R.id.textView);
-
-        subscriptions.add(
+        addSubscription(
                 mainPresenter.getEmail()
                         .subscribe(email -> textView.setText("Logged in as " + email))
         );
 
-        subscriptions.add(
+        addSubscription(
                 RxView.clicks(findViewById(R.id.button))
                         .subscribe(o -> mainPresenter.logOut())
         );
-    }
-
-    @Override
-
-    protected void onDestroy() {
-        super.onDestroy();
-        subscriptions.dispose();
     }
 
     @Override

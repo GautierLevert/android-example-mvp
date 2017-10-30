@@ -1,7 +1,6 @@
 package org.mybop.mvpmindorks.splash;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import org.mybop.mvpmindorks.BaseActivity;
 import org.mybop.mvpmindorks.R;
@@ -18,11 +17,15 @@ public class SplashActivity extends BaseActivity implements SplashContract.View 
     SplashContract.Presenter splashPresenter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+    protected void onInjectionDone() {
+        super.onInjectionDone();
 
         splashPresenter.decideNextActivity();
+    }
+
+    @Override
+    protected void setContentView() {
+        setContentView(R.layout.activity_splash);
     }
 
     @Override
