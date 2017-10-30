@@ -7,17 +7,16 @@ import org.mybop.mvpmindorks.CommonUtils;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by gautier on 27/10/2017.
- */
-
 public class LoginPresenter extends BasePresenter<LoginContract.View, LoginContract.Model> implements LoginContract.Presenter {
 
-    public LoginPresenter(@NonNull LoginContract.View view, @NonNull LoginContract.Model dataManager) {
+    @Inject
+    LoginPresenter(@NonNull LoginContract.View view, @NonNull LoginContract.Model dataManager) {
         super(view, dataManager);
     }
 
@@ -39,7 +38,5 @@ public class LoginPresenter extends BasePresenter<LoginContract.View, LoginContr
                                 getView().openMainActivity(),
                         throwable ->
                                 getView().showLoginFailed());
-
-
     }
 }

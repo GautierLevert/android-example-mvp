@@ -4,13 +4,16 @@ import android.support.annotation.NonNull;
 
 import org.mybop.mvpmindorks.BasePresenter;
 
+import javax.inject.Inject;
+
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainPresenter extends BasePresenter<MainContract.View, MainContract.Model> implements MainContract.Presenter {
 
-    public MainPresenter(@NonNull MainContract.View view, @NonNull MainContract.Model dataManager) {
+    @Inject
+    MainPresenter(@NonNull MainContract.View view, @NonNull MainContract.Model dataManager) {
         super(view, dataManager);
     }
 

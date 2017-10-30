@@ -12,11 +12,13 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
 import org.mybop.mvpmindorks.BaseActivity;
-import org.mybop.mvpmindorks.MvpApp;
 import org.mybop.mvpmindorks.R;
 import org.mybop.mvpmindorks.main.MainActivity;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.CompositeDisposable;
+import toothpick.config.Module;
 
 /**
  * A login screen that offers login via email/password.
@@ -31,7 +33,8 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     private Button mEmailSignInButton;
 
     // presenter
-    private LoginPresenter loginPresenter;
+    @Inject
+    LoginContract.Presenter loginPresenter;
 
     private CompositeDisposable subscriptions = new CompositeDisposable();
 
@@ -41,8 +44,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         setContentView(R.layout.activity_login);
 
         bindViews();
-
-        loginPresenter = new LoginPresenter(this, ((MvpApp) getApplication()).getUserManager());
 
         subscriptions.add(RxTextView.editorActions(mPasswordView, (id) -> id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL)
                 .subscribe(n -> attemptLogin()));
@@ -56,6 +57,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     protected void onDestroy() {
         super.onDestroy();
         subscriptions.dispose();
+    }
+
+    @Override
+    public Module getMvpModule() {
+        return new LoginModule(this);
     }
 
     private void attemptLogin() {

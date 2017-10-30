@@ -8,15 +8,18 @@ import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 
 import org.mybop.mvpmindorks.BaseActivity;
-import org.mybop.mvpmindorks.MvpApp;
 import org.mybop.mvpmindorks.R;
 import org.mybop.mvpmindorks.splash.SplashActivity;
 
+import javax.inject.Inject;
+
 import io.reactivex.disposables.CompositeDisposable;
+import toothpick.config.Module;
 
 public class MainActivity extends BaseActivity implements MainContract.View {
 
-    private MainPresenter mainPresenter;
+    @Inject
+    MainContract.Presenter mainPresenter;
 
     private TextView textView;
 
@@ -28,8 +31,6 @@ public class MainActivity extends BaseActivity implements MainContract.View {
         setContentView(R.layout.activity_main);
 
         textView = findViewById(R.id.textView);
-
-        mainPresenter = new MainPresenter(this, ((MvpApp) getApplication()).getUserManager());
 
         subscriptions.add(
                 mainPresenter.getEmail()
@@ -43,9 +44,15 @@ public class MainActivity extends BaseActivity implements MainContract.View {
     }
 
     @Override
+
     protected void onDestroy() {
         super.onDestroy();
         subscriptions.dispose();
+    }
+
+    @Override
+    public Module getMvpModule() {
+        return new MainModule(this);
     }
 
     @Override

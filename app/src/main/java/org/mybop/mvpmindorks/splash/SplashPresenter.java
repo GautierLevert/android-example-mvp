@@ -4,12 +4,15 @@ import android.support.annotation.NonNull;
 
 import org.mybop.mvpmindorks.BasePresenter;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class SplashPresenter extends BasePresenter<SplashContract.View, SplashContract.Model> implements SplashContract.Presenter {
 
-    public SplashPresenter(@NonNull SplashContract.View view, @NonNull SplashContract.Model dataManager) {
+    @Inject
+    SplashPresenter(@NonNull SplashContract.View view, @NonNull SplashContract.Model dataManager) {
         super(view, dataManager);
     }
 

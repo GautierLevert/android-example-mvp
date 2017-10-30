@@ -2,21 +2,28 @@ package org.mybop.mvpmindorks;
 
 import android.app.Application;
 
-import org.mybop.mvpmindorks.model.SharedPrefsHelper;
-import org.mybop.mvpmindorks.model.UserManager;
+import toothpick.Scope;
+import toothpick.Toothpick;
+import toothpick.smoothie.module.SmoothieApplicationModule;
 
 public class MvpApp extends Application {
 
-    private SharedPrefsHelper sharedPrefsHelper;
+    private Scope scope;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        this.sharedPrefsHelper = new SharedPrefsHelper(this);
+        scope = Toothpick.openScope(this);
+        scope.installModules(new SmoothieApplicationModule(this));
+        Toothpick.inject(this, scope);
     }
 
-    public UserManager getUserManager() {
-        return new UserManager(sharedPrefsHelper);
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+
+        // for test purpose only
+        Toothpick.closeScope(scope);
     }
 }
