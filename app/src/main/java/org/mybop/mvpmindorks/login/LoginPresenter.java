@@ -6,13 +6,16 @@ import android.support.annotation.NonNull;
 import org.mybop.mvpmindorks.BasePresenter;
 import org.mybop.mvpmindorks.CommonUtils;
 
+import javax.inject.Inject;
+
 /**
  * Created by gautier on 27/10/2017.
  */
 
 public class LoginPresenter extends BasePresenter<LoginContract.View, LoginContract.Model> implements LoginContract.Presenter {
 
-    public LoginPresenter(@NonNull LoginContract.View view, @NonNull LoginContract.Model dataManager) {
+    @Inject
+    LoginPresenter(@NonNull LoginContract.View view, @NonNull LoginContract.Model dataManager) {
         super(view, dataManager);
     }
 

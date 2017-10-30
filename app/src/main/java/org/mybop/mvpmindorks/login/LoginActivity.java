@@ -12,9 +12,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.mybop.mvpmindorks.BaseActivity;
-import org.mybop.mvpmindorks.MvpApp;
 import org.mybop.mvpmindorks.R;
 import org.mybop.mvpmindorks.main.MainActivity;
+
+import javax.inject.Inject;
+
+import toothpick.config.Module;
 
 /**
  * A login screen that offers login via email/password.
@@ -29,8 +32,8 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
     private Button mEmailSignInButton;
 
     // presenter
-    private LoginPresenter loginPresenter;
-
+    @Inject
+    LoginContract.Presenter loginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +41,6 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
         setContentView(R.layout.activity_login);
 
         bindViews();
-
-        loginPresenter = new LoginPresenter(this, ((MvpApp) getApplication()).getUserManager());
-
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -59,8 +59,11 @@ public class LoginActivity extends BaseActivity implements LoginContract.View {
                 attemptLogin();
             }
         });
+    }
 
-
+    @Override
+    public Module getMvpModule() {
+        return new LoginModule(this);
     }
 
     private void attemptLogin() {

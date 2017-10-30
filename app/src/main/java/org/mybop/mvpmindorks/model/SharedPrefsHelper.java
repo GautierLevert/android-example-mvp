@@ -1,20 +1,22 @@
 package org.mybop.mvpmindorks.model;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 
-import static android.content.Context.MODE_PRIVATE;
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class SharedPrefsHelper {
-
-    public static final String MY_PREFS = "MY_PREFS";
 
     public static final String EMAIL = "EMAIL";
 
-    SharedPreferences mSharedPreferences;
+    public static final String IS_LOGGED_IN = "IS_LOGGED_IN";
 
-    public SharedPrefsHelper(Context context) {
-        mSharedPreferences = context.getSharedPreferences(MY_PREFS, MODE_PRIVATE);
+    private SharedPreferences mSharedPreferences;
+
+    @Inject
+    SharedPrefsHelper(SharedPreferences sharedPreferences) {
+        mSharedPreferences = sharedPreferences;
     }
 
     public void clear() {
@@ -30,10 +32,10 @@ public class SharedPrefsHelper {
     }
 
     public boolean getLoggedInMode() {
-        return mSharedPreferences.getBoolean("IS_LOGGED_IN", false);
+        return mSharedPreferences.getBoolean(IS_LOGGED_IN, false);
     }
 
-    public void setLoggedInMode(boolean loggedIn) {
-        mSharedPreferences.edit().putBoolean("IS_LOGGED_IN", loggedIn).apply();
+    public void setLoggedInMode() {
+        mSharedPreferences.edit().putBoolean(IS_LOGGED_IN, true).apply();
     }
 }

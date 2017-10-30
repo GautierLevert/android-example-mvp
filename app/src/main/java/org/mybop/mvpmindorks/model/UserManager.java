@@ -4,11 +4,16 @@ import org.mybop.mvpmindorks.login.LoginContract;
 import org.mybop.mvpmindorks.main.MainContract;
 import org.mybop.mvpmindorks.splash.SplashContract;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class UserManager implements SplashContract.Model, LoginContract.Model, MainContract.Model {
 
     SharedPrefsHelper sharedPrefsHelper;
 
-    public UserManager(SharedPrefsHelper sharedPrefsHelper) {
+    @Inject
+    UserManager(SharedPrefsHelper sharedPrefsHelper) {
         this.sharedPrefsHelper = sharedPrefsHelper;
     }
 
@@ -29,7 +34,7 @@ public class UserManager implements SplashContract.Model, LoginContract.Model, M
 
     @Override
     public void setLoggedIn() {
-        sharedPrefsHelper.setLoggedInMode(true);
+        sharedPrefsHelper.setLoggedInMode();
     }
 
     @Override
