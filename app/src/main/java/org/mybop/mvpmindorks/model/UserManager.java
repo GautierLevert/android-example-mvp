@@ -13,7 +13,7 @@ import io.reactivex.Single;
 @Singleton
 public class UserManager implements SplashContract.Model, LoginContract.Model, MainContract.Model {
 
-    SharedPrefsHelper sharedPrefsHelper;
+    private SharedPrefsHelper sharedPrefsHelper;
 
     @Inject
     UserManager(SharedPrefsHelper sharedPrefsHelper) {
